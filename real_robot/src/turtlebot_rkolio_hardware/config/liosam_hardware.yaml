@@ -1,0 +1,83 @@
+# LIO-SAM configuration for TurtleBot3 real hardware
+# Pixhawk Cube Orange+ IMU + Velodyne VLP-16
+# NOTE: No vlp16_ring_time_fixer needed — real Velodyne driver provides ring+time
+
+/**:
+  ros__parameters:
+
+    # ── Topics ──────────────────────────────────────────────────────────────
+    pointCloudTopic: "/velodyne_points"
+    imuTopic:        "/mavros/imu/data"
+    odomTopic:       "odometry/imu"
+    gpsTopic:        "odometry/gps"
+
+    # ── Frames ──────────────────────────────────────────────────────────────
+    lidarFrame:      "velodyne"
+    baselinkFrame:   "base_link"
+    odometryFrame:   "odom"
+    mapFrame:        "map"
+
+    # ── Sensor settings ─────────────────────────────────────────────────────
+    # VLP-16: 16 beams, -15° to +15°, 10 Hz
+    sensor:          velodyne
+    N_SCAN:          16
+    Horizon_SCAN:    1800
+    downsampleRate:  1
+    lidarMinRange:   0.5
+    lidarMaxRange:   100.0
+
+    # ── IMU ─────────────────────────────────────────────────────────────────
+    # imuType: 0 = 6-axis (accel+gyro only — correct for Pixhawk in SLAM)
+    imuType:         0
+    imuFrequency:    50    # update to 200 after IMU rate fix is applied
+
+    # Pixhawk Cube Orange+ noise parameters (ICM-42688-P)
+    # These are starting values — can be tuned after first run
+    imuAccNoise:    0.02
+    imuGyrNoise:    0.005
+    imuAccBiasN:    0.0001
+    imuGyrBiasN:    0.00001
+    imuGravity:     9.80511
+    imuRPYWeight:   0.01
+
+    # ── Extrinsics: LiDAR in IMU frame ──────────────────────────────────────
+    # Pixhawk (IMU) at z=0.10m from base_link
+    # Velodyne (LiDAR) at z=0.30m from base_link
+    # → LiDAR is 0.20m above IMU
+    # IMPORTANT: verify with a ruler on the actual robot and update these
+    extrinsicTrans: [ 0.0,  0.0,  0.20]
+    extrinsicRot:   [ 1.0,  0.0,  0.0,
+                      0.0,  1.0,  0.0,
+                      0.0,  0.0,  1.0]
+
+    # ── Map optimisation ────────────────────────────────────────────────────
+    edgeFeatureMinValidNum:    10
+    surfFeatureMinValidNum:    100
+    odometrySurfLeafSize:      0.4
+    mappingCornerLeafSize:     0.2
+    mappingSurfLeafSize:       0.4
+    keyFrameAddingDistThreshold:   1.0
+    keyFrameAddingAngleThreshold:  0.2
+    globalMapVisualizationSearchRadius:    1000.0
+    globalMapVisualizationPoseDensity:     10.0
+    globalMapVisualizationLeafSize:        1.0
+
+    # ── GTSAM ───────────────────────────────────────────────────────────────
+    surroundingkeyframeAddingDistThreshold:   1.0
+    surroundingkeyframeAddingAngleThreshold:  0.2
+    surroundingKeyframeDensity:   2.0
+    surroundingKeyframeSearchRadius:  50.0
+
+    # ── Loop closure ────────────────────────────────────────────────────────
+    loopClosureEnableFlag:          true
+    loopClosureFrequency:           1.0
+    surroundingKeyframeSize:        50
+    historyKeyframeSearchRadius:    15.0
+    historyKeyframeSearchTimeDiff:  30.0
+    historyKeyframeSearchNum:       25
+    historyKeyframeFitnessScore:    0.3
+
+    # ── Visualisation ───────────────────────────────────────────────────────
+    globalMapVisualizationSearchRadius:  1000.0
+    globalMapVisualizationPoseDensity:   10.0
+    globalMapVisualizationLeafSize:      1.0

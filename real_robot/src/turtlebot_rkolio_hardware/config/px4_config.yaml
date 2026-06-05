@@ -1,0 +1,21 @@
+# RKO-LIO Configuration with PX4 Cube Orange+
+lidar_topic: "/velodyne_points"
+imu_topic: "/mavros/imu/data"
+base_frame: "velodyne"
+
+# Extrinsics - adjust based on PX4 mounting position relative to LiDAR
+extrinsic_imu2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+
+# Optimized for PX4 50Hz + VLP-16 10Hz
+initial_voxel_size: 0.8
+min_range: 0.8
+max_range: 80.0
+deskewing: true
+gravity_align: true
+
+# Performance parameters for 50Hz IMU
+num_threads: 6
+max_num_points_per_voxel: 25
+imu_buffer_size: 1500  # Smaller buffer for 50Hz
+lidar_buffer_size: 25

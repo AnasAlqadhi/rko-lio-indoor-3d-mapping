@@ -1,0 +1,25 @@
+# Lightweight Configuration for Performance Recovery
+lidar_topic: "/velodyne_points"
+imu_topic: "/mavros/imu/data"
+base_frame: "velodyne"
+
+# Same extrinsics
+extrinsic_imu2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+
+# Reduced processing parameters
+initial_voxel_size: 1.5          # Larger voxels = less computation
+min_range: 2.0                   # Skip close points
+max_range: 50.0                  # Shorter range = fewer points
+max_num_points_per_voxel: 15     # Fewer points per voxel
+max_num_keyframes: 25            # Shorter history
+
+# Conservative threading
+num_threads: 4                   # Reduce from 8 to 4
+imu_buffer_size: 200             # Smaller buffers
+lidar_buffer_size: 30
+
+# Stability settings
+gravity_align: true
+gravity_alignment_time: 8.0
+deskewing: true

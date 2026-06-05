@@ -1,0 +1,38 @@
+/**:
+  ros__parameters:
+    # Sim mirrors the real robot: Pixhawk Cube Orange+ IMU at 50 Hz on /mavros/imu/data.
+    lidar_topic: "/velodyne_points"
+    imu_topic:   "/mavros/imu/data"
+    base_frame:  "base_link"
+    imu_frame:   "imu_link"
+    lidar_frame: "velodyne"
+    odom_frame:  "odom"
+    odom_topic:  "/rko_lio/odometry"
+
+    # LIO tuning aligned with the proven real-robot config (rkolio_params.yaml).
+    # NOTE: deskew is disabled in sim because the Gazebo gazebo_ros_ray_sensor
+    # plugin does not emit per-point timestamps. On the real robot the Velodyne
+    # driver emits timestamps and deskew should be re-enabled.
+    deskew:               false
+    initialization_phase: true
+    max_iterations:       100
+    convergence_criterion: 0.00001
+    max_num_threads:      0
+
+    voxel_size:           0.3
+    double_downsample:    true
+    max_points_per_voxel: 20
+    max_range:            20.0
+    min_range:            0.9
+    max_correspondance_distance: 0.5
+
+    # IMU & dynamics tuned for 50 Hz Pixhawk
+    min_beta:          150.0
+    max_expected_jerk: 5.0
+    imu_buffer_size:   4000
+    lidar_buffer_size: 50
+
+    publish_local_map:     true
+    map_topic:             "/rko_lio/local_map"
+    publish_deskewed_scan: true
+    invert_odom_tf:        false

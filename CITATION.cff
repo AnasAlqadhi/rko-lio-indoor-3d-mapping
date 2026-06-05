@@ -1,0 +1,54 @@
+cff-version: 1.2.0
+message: "If you use this software or build on this work, please cite the paper below."
+title: "Drift-Resilient Indoor 3D Mapping in GPS-Denied Environments Using RKO-LIO with Velodyne–Pixhawk Integration in ROS 2"
+abstract: >-
+  Indoor 3D mapping system integrating a Velodyne VLP-16 LiDAR and a Pixhawk Cube
+  Orange+ IMU on a TurtleBot Waffle Pi running ROS 2 Humble, evaluating RKO-LIO
+  (a sensor-agnostic LiDAR–inertial odometry method) against LIO-SAM and FAST-LIO.
+  Real-robot validation achieves centimeter-level accuracy (RMSE 0.026 m), and a
+  controlled Gazebo simulation benchmark exposes the accuracy–robustness trade-off
+  across three GPS-denied indoor environments.
+type: software
+authors:
+  - family-names: "Alqadhi"
+    given-names: "Anas Mahyoub Naji Saeed"
+    affiliation: "Mechatronics Engineering Department, Fırat University, Elazığ, Turkey"
+    email: anas.m.qd@gmail.com
+  - family-names: "el Muhammed"
+    given-names: "Munef"
+    affiliation: "Mechatronics Engineering Department, Fırat University, Elazığ, Turkey"
+  - family-names: "Bajhaw"
+    given-names: "Mohammed Ali Mohammed S."
+    affiliation: "Mechatronics Engineering Department, Fırat University, Elazığ, Turkey"
+  - family-names: "Uçar"
+    given-names: "Ayşegül"
+    affiliation: "Mechatronics Engineering Department, Fırat University, Elazığ, Turkey"
+    email: agulucar@firat.edu.tr
+keywords:
+  - LiDAR-IMU fusion
+  - indoor 3D mapping
+  - GPS-denied environments
+  - RKO-LIO
+  - ROS 2
+  - SLAM
+  - drift resilience
+  - simulation benchmarking
+license: MIT
+date-released: 2026-06-05
+# TODO: fill in once the conference publishes the proceedings
+# doi: "10.xxxx/xxxxx"
+# conference: "<conference name and year>"
+preferred-citation:
+  type: conference-paper
+  title: "Drift-Resilient Indoor 3D Mapping in GPS-Denied Environments Using RKO-LIO with Velodyne–Pixhawk Integration in ROS 2"
+  authors:
+    - family-names: "Alqadhi"
+      given-names: "Anas Mahyoub Naji Saeed"
+    - family-names: "el Muhammed"
+      given-names: "Munef"
+    - family-names: "Bajhaw"
+      given-names: "Mohammed Ali Mohammed S."
+    - family-names: "Uçar"
+      given-names: "Ayşegül"
+  year: 2026
+  # doi: "10.xxxx/xxxxx"

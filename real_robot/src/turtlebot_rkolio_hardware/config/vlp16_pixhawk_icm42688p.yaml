@@ -1,0 +1,116 @@
+# =============================================================================
+# RKO-LIO — Velodyne VLP-16 + Pixhawk Orange Cube Plus (ICM-42688-P IMU)
+# Target computer : Jetson Orin / x86 NUC running Ubuntu 22.04 + ROS 2 Humble
+# REP-103 / REP-105 compliant (base_link → imu_link → velodyne  |  odom → map)
+# =============================================================================
+#
+# HARDWARE GEOMETRY (top-down Z-axis stack):
+#   base_link  (robot chassis center, ground plane)
+#     └─ imu_link   @ [0, 0, +0.00 m]  — Pixhawk at chassis level (adjust if needed)
+#     └─ velodyne   @ [0, 0, +0.15 m]  — VLP-16 is 15 cm above the Pixhawk
+#
+# The RKO-LIO extrinsics below express each sensor relative to base_link.
+# Convention: extrinsic_X2base  =  T_{base ← X}
+#   i.e. p_base = R * p_X + t
+#
+# =============================================================================
+
+/rko_lio_node:
+  ros__parameters:
+
+    # -------------------------------------------------------------------------
+    # 1. TOPIC & FRAME IDs
+    # -------------------------------------------------------------------------
+    # Velodyne ROS 2 driver publishes raw PointCloud2 on this topic (REP-145).
+    lidar_topic:   "/velodyne_points"       # sensor_msgs/msg/PointCloud2
+    # MAVROS re-publishes the Pixhawk HIGHRES_IMU as a standard ROS IMU msg.
+    imu_topic:     "/mavros/imu/data"       # sensor_msgs/msg/Imu  @ ≥200 Hz
+
+    # REP-105 frame names -------------------------------------------------
+    base_frame:    "base_link"   # root kinematic frame of the robot body
+    imu_frame:     "imu_link"    # Pixhawk / ICM-42688-P frame
+    lidar_frame:   "velodyne"    # VLP-16 spinning head frame
+    odom_frame:    "odom"        # wheel/LIO odometry origin (drifts OK)
+    # map_frame is implicitly published by a separate downstream SLAM node.
+
+    # Output -----------------------------------------------------------------
+    odom_topic:    "/rko_lio/odometry"      # nav_msgs/msg/Odometry
+    map_topic:     "/rko_lio/local_map"     # sensor_msgs/msg/PointCloud2
+
+    # -------------------------------------------------------------------------
+    # 2. EXTRINSIC CALIBRATION
+    #    Format: [qx, qy, qz, qw,  tx, ty, tz]
+    #    All translations in metres, rotation = identity (parallel mounting).
+    #
+    #    Setup:
+    #      • Pixhawk (imu_link) at the same height as base_link  → tz = 0.00 m
+    #      • VLP-16   (velodyne) 15 cm above Pixhawk             → tz = 0.15 m
+    #
+    #    T_{base ← imu}  : imu_link is co-located with base_link
+    #    T_{base ← lidar}: velodyne is 0.15 m above base_link
+    # -------------------------------------------------------------------------
+    extrinsic_imu2base_quat_xyzw_xyz:   [0.0, 0.0, 0.0, 1.0,   0.0,  0.0,  0.00]
+    extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0,   0.0,  0.0, -0.15]
+    #  ↑ negative tz because the transform is expressed as T_{base←lidar}:
+    #    to go from the velodyne frame back to base_link you subtract 0.15 m in Z.
+
+    # -------------------------------------------------------------------------
+    # 3. SCAN PROCESSING & VOXEL MAP
+    # -------------------------------------------------------------------------
+    deskew: true                  # MANDATORY when IMU < 400 Hz; corrects motion
+                                  # distortion within each 100 ms VLP-16 sweep.
+    initialization_phase: false   # Avoid SO3::exp instability on first frames.
+
+    # Voxel downsampling hierarchy:
+    #   double_downsample=true  → pre-filter at (0.5 × voxel_size),
+    #                             ICP keypoints at (1.5 × voxel_size)
+    voxel_size:            0.30   # metres — good for indoor/outdoor mixed env
+    double_downsample: true
+    max_points_per_voxel:  20
+
+    # VLP-16 effective range for SLAM (avoid self-reflection < 0.9 m)
+    min_range:   0.9              # metres
+    max_range:  50.0              # metres
+
+    # ICP correspondence search radius
+    max_correspondance_distance: 0.50
+
+    # ICP solver
+    max_iterations:        100
+    convergence_criterion: 1.0e-05
+
+    # Thread count — 0 = use all hardware cores (recommended on Orin/NUC)
+    max_num_threads: 0
+
+    # -------------------------------------------------------------------------
+    # 4. KALMAN FILTER & IMU DYNAMICS  (ICM-42688-P @ 200 Hz via MAVROS)
+    #
+    #  ICM-42688-P datasheet noise spectral densities:
+    #    Gyroscope  in-run bias stability : 0.65  °/hr  (~0.000189 rad/s² / √Hz)
+    #    Gyroscope  noise density         : 0.0028 °/s/√Hz  = 4.89e-05 rad/s/√Hz
+    #    Accelerometer noise density      : 70  µg/√Hz      = 6.87e-04 m/s²/√Hz
+    #    Accelerometer in-run bias        : 25  µg           = 2.45e-04 m/s²
+    #
+    #  These raw values pass through the Pixhawk EKF2 and MAVROS before
+    #  arriving at RKO-LIO, so effective noise is slightly higher.
+    #  The min_beta / max_expected_jerk pair below is tuned accordingly.
+    # -------------------------------------------------------------------------
+
+    # min_beta: orientation constraint weight from IMU.
+    #   Higher = trust LiDAR more, lower = trust IMU orientation more.
+    #   ICM-42688-P is a high-grade IMU; 150.0 provides stronger IMU weighting
+    #   than the upstream default (200.0) and reduces LIO drift on fast turns.
+    min_beta: 150.0
+
+    # max_expected_jerk: body-acceleration Kalman filter bandwidth (m/s³).
+    #   5.0 matches typical ground-robot dynamics while rejecting 200 Hz
+    #   quantisation noise from MAVROS.
+    max_expected_jerk: 5.0
+
+    # -------------------------------------------------------------------------
+    # 5. OUTPUT PUBLISHERS
+    # -------------------------------------------------------------------------
+    publish_local_map:        true
+    publish_deskewed_scan:    true
+    publish_lidar_acceleration: true
+    invert_odom_tf:           false

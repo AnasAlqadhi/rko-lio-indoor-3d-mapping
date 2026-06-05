@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>turtlebot_rkolio_hardware</name>
+  <version>1.0.0</version>
+  <description>Real robot hardware launch files and config for TurtleBot3 + Velodyne VLP-16 + Pixhawk</description>
+  <maintainer email="anas.m.alqadhi1111@gmail.com">AnasAlqadhi</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>rko_lio</exec_depend>
+  <exec_depend>lio_sam</exec_depend>
+  <exec_depend>velodyne</exec_depend>
+  <exec_depend>mavros</exec_depend>
+  <exec_depend>mavros_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,9 @@
+# Place exported paper figures here (see ../README.md for the full checklist).
+#
+# Expected filenames:
+#   fig1_platform.png
+#   fig2_architecture.png
+#   fig3_object_validation.png
+#   fig4_realrobot_maps.png
+#   fig5_sim_maps.png
+#   fig6_sim_trajectories.png

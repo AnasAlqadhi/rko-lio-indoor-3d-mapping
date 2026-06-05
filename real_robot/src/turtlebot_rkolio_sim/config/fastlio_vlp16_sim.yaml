@@ -1,0 +1,53 @@
+/**:
+    ros__parameters:
+        feature_extract_enable: false
+        # point_filter_num=2 means 1 in 2 LiDAR points kept (mild downsample).
+        point_filter_num: 2
+        max_iteration: 3
+        filter_size_surf: 0.1
+        filter_size_map: 0.1
+        cube_side_length: 50.0
+        runtime_pos_log_enable: false
+        map_file_path: ""    # disable PCD saving by default
+
+        common:
+            lid_topic:  "/velodyne_points_proc"
+            imu_topic:  "/mavros/imu/data"
+            time_sync_en: false
+            time_offset_lidar_to_imu: 0.0
+
+        preprocess:
+            lidar_type: 2        # 2 = Velodyne
+            scan_line:  16       # VLP-16
+            scan_rate:  10       # 10 Hz
+            timestamp_unit: 2    # microseconds
+            blind: 0.3           # min_range
+
+        # IMU noise tuned for Pixhawk Cube Orange+ at 50 Hz. The bias-walk
+        # covariances are raised vs. the original defaults because at low IMU
+        # rate the bias estimator has fewer samples to converge.
+        mapping:
+            acc_cov: 0.05
+            gyr_cov: 0.005
+            b_acc_cov: 0.0005
+            b_gyr_cov: 0.0005
+            fov_degree:    360.0
+            det_range:     20.0  # match RKO-LIO max_range
+            extrinsic_est_en: false
+            # IMU is inside the Pixhawk Cube at (0.06, 0, 0.272) in base_link.
+            # LiDAR is at (0, 0, 0.325). LiDAR pose in IMU frame:
+            extrinsic_T: [-0.06, 0.0, 0.053]
+            extrinsic_R: [1., 0., 0.,
+                          0., 1., 0.,
+                          0., 0., 1.]
+
+        publish:
+            path_en:  true
+            scan_publish_en:  true
+            dense_publish_en: true
+            scan_bodyframe_pub_en: false
+            map_en: true
+
+        pcd_save:
+            pcd_save_en: false
+            interval: -1

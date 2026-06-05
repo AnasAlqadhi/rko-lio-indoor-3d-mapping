@@ -1,0 +1,68 @@
+# RKO-LIO Configuration for 50Hz Pixhawk IMU + Velodyne VLP-16
+# Optimized for TurtleBot3 Waffle Pi on Jetson AGX Orin
+/rko_lio_node:
+  ros__parameters:
+    # -----------------------------
+    # 1. CORE TOPICS & FRAMES
+    # -----------------------------
+    imu_topic: "/imu/synced"           # re-stamped with system time (fixes Pixhawk 3s clock offset)
+    lidar_topic: "/velodyne_points"    # standard Velodyne VLP-16 output
+    base_frame: "base_link"
+    imu_frame: "imu_link"
+    lidar_frame: "velodyne"
+    odom_frame: "odom"
+    odom_topic: "/rko_lio/odometry"
+
+    # Extrinsics set directly — bypasses TF lookup in IMU callback so data is buffered immediately.
+    # Format: [qx, qy, qz, qw, tx, ty, tz]  (identity rotation, z offset only)
+    # IMU (imu_link) is 0.10 m above base_link → imu2base translation = [0, 0, -0.10]
+    # LiDAR (velodyne) is 0.30 m above base_link → lidar2base translation = [0, 0, -0.30]
+    extrinsic_imu2base_quat_xyzw_xyz:   [0.0, 0.0, 0.0, 1.0,  0.0, 0.0, -0.10]
+    extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0,  0.0, 0.0, -0.30]
+
+    # -----------------------------
+    # 2. LIO CONFIGURATION (STABILITY & DRIFT REDUCTION)
+    # -----------------------------
+    deskew: true                       # VLP-16 publishes relative times (-0.1s to 0s); process_timestamps offsets by header_stamp
+    initialization_phase: false        # Disabled: causes SO3::exp crash on first IMU frames
+    max_iterations: 100
+    convergence_criterion: 1e-05
+    max_num_threads: 0                 # 0 uses all available cores on AGX Orin
+    
+    # -----------------------------
+    # 3. SAMPLING & RESOLUTION (TUNED FOR 0.026m RMSE)
+    # -----------------------------
+    # Voxel size is the primary point-cloud downsampling threshold.
+    # 0.3m provides high-density features while maintaining real-time performance.
+    voxel_size: 0.3 
+    
+    # double_downsample applies a two-stage filter:
+    # 1. Input: 0.15m (0.5 * voxel_size) for pre-filtering
+    # 2. Keypoints: 0.45m (1.5 * voxel_size) for the ICP optimization
+    double_downsample: true 
+    
+    max_points_per_voxel: 20
+    max_range: 50.0                    # VLP-16 range is 100m, but 50m is safer for dense dynamic envs
+    min_range: 0.9                     # Ignore TB3 chassis reflections near the LiDAR
+    max_correspondance_distance: 1.5   # Search radius for voxel association (generous for first ICP runs)
+
+    # -----------------------------
+    # 4. IMU & DYNAMICS (TUNED FOR 50Hz PIXHAWK)
+    # -----------------------------
+    # min_beta is the weight of the orientation constraint (from IMU).
+    # Lower min_beta = Higher trust in IMU orientation.
+    # For a stable Pixhawk internal EKF at 50Hz, 150.0 is more conservative than default 200.0.
+    min_beta: 150.0 
+    
+    # max_expected_jerk influences the Kalman body acceleration filter.
+    # 5.0 m/s³ allows the LIO to follow TB3 dynamics while filtering 50Hz discretization noise.
+    max_expected_jerk: 5.0
+    
+    # -----------------------------
+    # 5. OUTPUT
+    # -----------------------------
+    publish_local_map: true
+    map_topic: "/rko_lio/local_map"
+    publish_deskewed_scan: true
+    publish_lidar_acceleration: true
+    invert_odom_tf: false

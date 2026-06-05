@@ -1,0 +1,69 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /LiDAR Raw1
+        - /LIO-SAM Registered Scan1
+        - /LIO-SAM Global Map1
+        - /LIO-SAM Path1
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.8
+      Class: rviz_default_plugins/PointCloud2
+      Color: 100; 200; 255
+      Color Transformer: FlatColor
+      Enabled: true
+      Name: LiDAR Raw
+      Size (Pixels): 2
+      Style: Flat Squares
+      Topic: /velodyne_points
+      Value: true
+    - Alpha: 1
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 220; 0
+      Color Transformer: FlatColor
+      Enabled: true
+      Name: LIO-SAM Registered Scan
+      Size (Pixels): 2
+      Style: Flat Squares
+      Topic: /lio_sam/mapping/cloud_registered
+      Value: true
+    - Alpha: 0.8
+      Class: rviz_default_plugins/PointCloud2
+      Color Transformer: AxisColor
+      Axis: Z
+      Enabled: true
+      Name: LIO-SAM Global Map
+      Size (Pixels): 1
+      Style: Flat Squares
+      Topic: /lio_sam/mapping/map_global
+      Decay Time: 0
+      Value: true
+    - Class: rviz_default_plugins/Path
+      Color: 255; 50; 0
+      Enabled: true
+      Name: LIO-SAM Path
+      Topic: /lio_sam/mapping/path
+      Value: true
+    - Class: rviz_default_plugins/Odometry
+      Covariance:
+        Value: false
+      Enabled: true
+      Keep: 200
+      Name: LIO-SAM Odometry
+      Topic: /lio_sam/mapping/odometry
+      Value: true
+  Enabled: true
+  Fixed Frame: odom
+  Frame Rate: 15

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>turtlebot_rkolio_sim</name>
+  <version>1.0.0</version>
+  <description>
+    Gazebo Classic 11 simulation for a custom TurtleBot3 Waffle Pi
+    equipped with Velodyne VLP-16 and Pixhawk IMU, running RKO-LIO
+    for 3D LiDAR-inertial odometry in GPS-denied indoor environments.
+  </description>
+  <maintainer email="anas@todo.com">Anas Alqadhi</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros_pkgs</depend>
+  <depend>turtlebot3_description</depend>
+  <depend>velodyne_simulator</depend>
+  <depend>teleop_twist_keyboard</depend>
+  <depend>rviz2</depend>
+  <exec_depend>rko_lio</exec_depend>
+  <exec_depend>fast_lio</exec_depend>
+  <exec_depend>lio_sam</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

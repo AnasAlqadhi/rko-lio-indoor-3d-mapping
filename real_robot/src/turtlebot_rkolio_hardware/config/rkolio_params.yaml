@@ -1,0 +1,54 @@
+# RKO-LIO Configuration for Pixhawk IMU + Velodyne VLP-16
+# Tuned for the hardware bringup path that publishes /imu/synced and expects
+# explicit IMU/LiDAR extrinsics relative to base_link.
+/rko_lio_node:
+  ros__parameters:
+    # -----------------------------
+    # 1. CORE TOPICS & FRAMES
+    # -----------------------------
+    imu_topic: "/imu/synced"
+    lidar_topic: "/velodyne_points"
+    base_frame: "base_link"
+    imu_frame: "imu_link"
+    lidar_frame: "velodyne"
+    odom_frame: "odom"
+    odom_topic: "/rko_lio/odometry"
+
+    # Fixed transforms relative to base_link.
+    extrinsic_imu2base_quat_xyzw_xyz:   [0.0, 0.0, 0.0, 1.0,  0.0, 0.0, -0.10]
+    extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0,  0.0, 0.0, -0.30]
+
+    # -----------------------------
+    # 2. LIO CONFIGURATION
+    # -----------------------------
+    deskew: true
+    initialization_phase: false
+    max_iterations: 50
+    convergence_criterion: 1e-05
+    max_num_threads: 0
+    async.max_lidar_buffer_size: 200
+
+    # -----------------------------
+    # 3. SAMPLING & RESOLUTION
+    # -----------------------------
+    voxel_size: 0.3
+    double_downsample: true
+    max_points_per_voxel: 20
+    max_range: 50.0
+    min_range: 0.9
+    max_correspondence_distance: 0.5
+
+    # -----------------------------
+    # 4. IMU & DYNAMICS
+    # -----------------------------
+    min_beta: 150.0
+    max_expected_jerk: 5.0
+
+    # -----------------------------
+    # 5. OUTPUT
+    # -----------------------------
+    publish_local_map: true
+    map_topic: "/rko_lio/local_map"
+    publish_deskewed_scan: true
+    publish_lidar_acceleration: true
+    invert_odom_tf: false

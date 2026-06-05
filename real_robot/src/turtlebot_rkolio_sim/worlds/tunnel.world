@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="tunnel_world">
+
+    <!-- ── Physics ─────────────────────────────────────────────────────── -->
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <!-- ── Dim sun (underground feel) ──────────────────────────────────── -->
+    <light name="sun" type="directional">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.15 0.15 0.15 1</diffuse>
+      <specular>0.05 0.05 0.05 1</specular>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <!-- ── 5 sparse tunnel lights ──────────────────────────────────────── -->
+    <light name="tunnel_light_1" type="point">
+      <pose>2.0 0 2.0 0 0 0</pose>
+      <diffuse>0.8 0.75 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>8</range>
+        <constant>0.4</constant>
+        <linear>0.12</linear>
+        <quadratic>0.03</quadratic>
+      </attenuation>
+    </light>
+
+    <light name="tunnel_light_2" type="point">
+      <pose>6.0 0 2.0 0 0 0</pose>
+      <diffuse>0.8 0.75 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>8</range>
+        <constant>0.4</constant>
+        <linear>0.12</linear>
+        <quadratic>0.03</quadratic>
+      </attenuation>
+    </light>
+
+    <light name="tunnel_light_3" type="point">
+      <pose>11.0 1.24 2.0 0 0 0</pose>
+      <diffuse>0.8 0.75 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>8</range>
+        <constant>0.4</constant>
+        <linear>0.12</linear>
+        <quadratic>0.03</quadratic>
+      </attenuation>
+    </light>
+
+    <light name="tunnel_light_4" type="point">
+      <pose>16.0 1.03 2.0 0 0 0</pose>
+      <diffuse>0.8 0.75 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>8</range>
+        <constant>0.4</constant>
+        <linear>0.12</linear>
+        <quadratic>0.03</quadratic>
+      </attenuation>
+    </light>
+
+    <light name="tunnel_light_5" type="point">
+      <pose>20.0 0.83 2.0 0 0 0</pose>
+      <diffuse>0.8 0.75 0.6 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>8</range>
+        <constant>0.4</constant>
+        <linear>0.12</linear>
+        <quadratic>0.03</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- ── Ground plane ────────────────────────────────────────────────── -->
+    <model name="ground">
+      <static>true</static>
+      <link name="link">
+        <collision name="col">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>30 10</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="vis">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>30 10</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.35 0.35 0.35 1</ambient>
+            <diffuse>0.35 0.35 0.35 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Tunnel: 22m long, 1.5m wide, 2.2m tall
+         4 segments with gentle bends:
+           Seg 1: 0→6m   heading  0°   (straight)
+           Seg 2: 6→13m  heading +12°  (turn left)
+           Seg 3: 13→18m heading -12°  (turn right, back toward 0°)
+           Seg 4: 18→22m heading  0°   (straight exit)
+
+         Math for segment centers (heading in radians, 12° = 0.2094 rad):
+           Seg 1: center (3, 0),       yaw = 0
+           Seg 2: center (9.42, 0.73), yaw = 0.2094
+           Seg 3: center (15.38, 1.24),yaw = -0.2094
+           Seg 4: center (20.0, 0.83), yaw = 0
+
+         Each segment: left wall, right wall, ceiling (floor is ground)
+         Wall offset = ±0.75m from centerline (half of 1.5m width)
+         ══════════════════════════════════════════════════════════════════ -->
+    <model name="tunnel">
+      <static>true</static>
+
+      <!-- ── Segment 1: 6m straight, heading 0° ─────────────────────── -->
+      <!-- Center: (3, 0), yaw: 0 -->
+      <link name="seg1_left">
+        <pose>3.0 0.75 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>6.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>6.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg1_right">
+        <pose>3.0 -0.75 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>6.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>6.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg1_ceiling">
+        <pose>3.0 0 2.2 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>6.0 1.5 0.15</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>6.0 1.5 0.15</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- ── Segment 2: 7m at +12° ──────────────────────────────────── -->
+      <!-- Center: (9.42, 0.73), yaw: 0.2094 -->
+      <link name="seg2_left">
+        <pose>9.27 1.54 1.1 0 0 0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>7.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>7.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg2_right">
+        <pose>9.57 -0.08 1.1 0 0 0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>7.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>7.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg2_ceiling">
+        <pose>9.42 0.73 2.2 0 0 0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>7.0 1.5 0.15</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>7.0 1.5 0.15</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- ── Segment 3: 5m at -12° ──────────────────────────────────── -->
+      <!-- Center: (15.38, 1.24), yaw: -0.2094 -->
+      <link name="seg3_left">
+        <pose>15.22 1.97 1.1 0 0 -0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>5.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>5.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg3_right">
+        <pose>15.54 0.51 1.1 0 0 -0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>5.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>5.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg3_ceiling">
+        <pose>15.38 1.24 2.2 0 0 -0.2094</pose>
+        <collision name="col">
+          <geometry><box><size>5.0 1.5 0.15</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>5.0 1.5 0.15</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- ── Segment 4: 4m straight, heading 0° ─────────────────────── -->
+      <!-- Center: (20.0, 0.83), yaw: 0 -->
+      <link name="seg4_left">
+        <pose>20.0 1.58 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>4.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>4.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg4_right">
+        <pose>20.0 0.08 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>4.0 0.15 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>4.0 0.15 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <link name="seg4_ceiling">
+        <pose>20.0 0.83 2.2 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>4.0 1.5 0.15</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>4.0 1.5 0.15</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- ── Entry wall (back wall at x=0, with opening) ────────────── -->
+      <!-- Left of entry -->
+      <link name="entry_left">
+        <pose>0 1.125 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.15 0.75 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.15 0.75 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- Right of entry -->
+      <link name="entry_right">
+        <pose>0 -1.125 1.1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.15 0.75 2.2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.15 0.75 2.2</size></box></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+    </model>
+
+  </world>
+</sdf>

@@ -1,0 +1,24 @@
+# RKO-LIO Configuration for Velodyne VLP-16 - Optimized
+lidar_topic: "/velodyne_points"
+imu_topic: "/mavros/imu/data"
+base_frame: "velodyne"
+
+# Since IMU is directly mounted on LiDAR
+extrinsic_imu2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+
+# Performance optimizations for your setup
+initial_voxel_size: 1.0
+min_range: 0.8
+max_range: 80.0
+deskewing: true
+gravity_align: true
+
+# Buffer and threading optimizations
+num_threads: 6
+max_num_points_per_voxel: 20
+max_num_keyframes: 50
+
+# IMU timing parameters
+imu_buffer_size: 2000
+lidar_buffer_size: 20

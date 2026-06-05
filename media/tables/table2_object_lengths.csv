@@ -1,0 +1,9 @@
+object,roll_meter_m,point_cloud_m,delta_cm,error_pct,accuracy_pct
+A,3.028,3.062,3.40,1.12,98.88
+B,2.047,2.077,3.00,1.47,98.53
+C,5.158,5.192,3.40,0.66,99.34
+D,7.724,7.736,1.20,0.16,99.84
+E,3.124,3.125,0.10,0.03,99.97
+mean,,,,0.69,
+# Aggregate: RMSE = 0.026 m (2.6 cm), MAE = 0.022 m, mean error = 0.69% (range 0.03% to -1.47%)
+# Source: Table II, real-robot point-cloud vs. roll-meter object lengths.

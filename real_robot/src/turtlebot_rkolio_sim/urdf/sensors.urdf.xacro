@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+  <!-- Velodyne VLP-16 LiDAR Sensor Macro                                 -->
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+  <xacro:macro name="velodyne_vlp16" params="parent">
+    <gazebo reference="${parent}">
+      <sensor type="gpu_ray" name="velodyne_vlp16">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>false</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>1800</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.141592653589793</min_angle>
+              <max_angle>3.141592653589793</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>16</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.261799</min_angle>
+              <max_angle>0.261799</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.5</min>
+            <max>50.0</max>
+            <resolution>0.003</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <plugin name="gazebo_ros_velodyne_laser" filename="libgazebo_ros_velodyne_laser.so">
+          <ros>
+            <namespace>/</namespace>
+            <remapping>~/out:=velodyne_points</remapping>
+          </ros>
+          <topicName>velodyne_points</topicName>
+          <frameName>velodyne</frameName>
+          <organize_cloud>false</organize_cloud>
+          <min_range>0.5</min_range>
+          <max_range>50.0</max_range>
+          <gaussianNoise>0.01</gaussianNoise>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+  <!-- IMU Sensor Macro (Pixhawk Cube Orange+ — 50 Hz to match real robot) -->
+  <!-- Publishes on /mavros/imu/data to mimic real robot's MAVROS bridge.   -->
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+  <xacro:macro name="imu_sensor" params="parent">
+    <gazebo reference="${parent}">
+      <gravity>true</gravity>
+      <sensor type="imu" name="pixhawk_imu">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <visualize>false</visualize>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.0005</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.0005</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.0005</stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.02</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.02</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>0.02</stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+        <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
+          <ros>
+            <namespace>/</namespace>
+            <remapping>~/out:=mavros/imu/data</remapping>
+          </ros>
+          <topicName>mavros/imu/data</topicName>
+          <bodyName>${parent}</bodyName>
+          <frameName>imu_link</frameName>
+          <updateRateHZ>50.0</updateRateHZ>
+          <gaussianNoise>0.0</gaussianNoise>
+          <xyzOffset>0 0 0</xyzOffset>
+          <rpyOffset>0 0 0</rpyOffset>
+          <initialOrientationAsReference>false</initialOrientationAsReference>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+</robot>

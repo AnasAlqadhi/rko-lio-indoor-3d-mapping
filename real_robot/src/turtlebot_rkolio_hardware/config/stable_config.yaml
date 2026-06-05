@@ -1,0 +1,21 @@
+lidar_topic: "/velodyne_points"
+imu_topic: "/imu/data_raw"
+base_frame: "velodyne"
+
+# Same extrinsics as before
+extrinsic_imu2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+
+# Drift reduction parameters
+initial_voxel_size: 0.8
+gravity_align: true
+gravity_alignment_time: 15.0    # Longer IMU initialization
+imu_integration_noise: 0.01     # Reduced IMU trust
+gyro_noise: 0.001               # Lower gyroscope noise assumption
+accel_noise: 0.1                # Lower accelerometer noise assumption
+
+# Conservative processing for stability
+num_threads: 4
+max_num_points_per_voxel: 30
+imu_buffer_size: 3000
+lidar_buffer_size: 30

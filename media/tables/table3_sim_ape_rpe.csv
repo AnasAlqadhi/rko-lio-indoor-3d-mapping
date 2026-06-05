@@ -1,0 +1,10 @@
+environment,metric,lio_sam,rko_lio,fast_lio,notes
+SmallHouse,APE_m,0.049,0.148,0.026,
+SmallHouse,RPE_m_per_m,0.025,0.042,0.018,
+Warehouse,APE_m,0.040,0.163,0.034,
+Warehouse,RPE_m_per_m,0.023,0.033,0.016,
+Bookstore,APE_m,21.689,0.494,0.039,LIO-SAM catastrophic divergence (map destroyed)
+Bookstore,RPE_m_per_m,22.962,0.148,0.022,LIO-SAM catastrophic divergence
+# RMSE in metres. APE: absolute pose error. RPE: relative pose error over 1 m.
+# Evaluated with evo, SE(3) Umeyama alignment vs. Gazebo wheel-odometry ground truth.
+# Source: Table III. FAST-LIO best per environment; RKO-LIO only method bounded everywhere.

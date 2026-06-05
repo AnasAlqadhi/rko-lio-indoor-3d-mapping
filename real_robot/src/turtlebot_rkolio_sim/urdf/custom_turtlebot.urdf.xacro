@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<!--
+  Custom TurtleBot3 Waffle Pi URDF for robot_state_publisher.
+  - Mirrors the link/joint structure of models/custom_turtlebot_rkolio/model.sdf
+  - The SDF (spawned into Gazebo) provides the physics, sensors, diff_drive,
+    and joint_state_publisher. This URDF just gives the static TF tree so
+    that SLAM nodes can resolve base_link <-> velodyne / imu_link.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="custom_turtlebot_rkolio">
+
+  <xacro:property name="wheel_radius"     value="0.033"/>
+  <xacro:property name="wheel_width"      value="0.018"/>
+  <xacro:property name="wheel_separation" value="0.287"/>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       Base
+       ══════════════════════════════════════════════════════════════════════ -->
+  <link name="base_footprint"/>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="-0.064 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_description/meshes/bases/waffle_pi_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.05 0.05 0.05 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.064 0 0.048" rpy="0 0 0"/>
+      <geometry><box size="0.265 0.265 0.089"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.064 0 0.048" rpy="0 0 0"/>
+      <mass value="1.3729096"/>
+      <inertia ixx="4.2111447e-02" ixy="0" ixz="0"
+               iyy="4.2111447e-02" iyz="0" izz="7.5254874e-02"/>
+    </inertial>
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.010" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       Wheels (continuous joints — SDF's joint_state_publisher feeds positions)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <link name="wheel_left_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      <material name="wheel_dark">
+        <color rgba="0.2 0.2 0.2 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.0285"/>
+      <inertia ixx="1.8158194e-03" ixy="0" ixz="0"
+               iyy="3.2922126e-03" iyz="0" izz="1.8158194e-03"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_left_link"/>
+    <origin xyz="0 0.144 0.023" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="wheel_right_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      <material name="wheel_dark"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.0285"/>
+      <inertia ixx="1.8158194e-03" ixy="0" ixz="0"
+               iyy="3.2922126e-03" iyz="0" izz="1.8158194e-03"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_right_link"/>
+    <origin xyz="0 -0.144 0.023" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- Casters (fixed — non-driven) -->
+  <link name="caster_back_right_link">
+    <inertial><mass value="0.001"/><inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/></inertial>
+  </link>
+  <joint name="caster_back_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_back_right_link"/>
+    <origin xyz="-0.177 -0.064 -0.004" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_back_left_link">
+    <inertial><mass value="0.001"/><inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/></inertial>
+  </link>
+  <joint name="caster_back_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_back_left_link"/>
+    <origin xyz="-0.177 0.064 -0.004" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       Payload stack: Jetson AGX Orin → Pixhawk Cube Orange+ → LiDAR mount → VLP-16
+       (Same poses as the SDF.)
+       ══════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Jetson AGX Orin housing (110×110×72 mm), flush on top of waffle plate -->
+  <link name="jetson_housing_link">
+    <visual>
+      <origin xyz="0 0 0.036" rpy="0 0 0"/>
+      <geometry><box size="0.11 0.11 0.072"/></geometry>
+      <material name="jetson_black"><color rgba="0.1 0.1 0.1 1.0"/></material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.0555 0.05" rpy="0 0 0"/>
+      <geometry><box size="0.08 0.003 0.012"/></geometry>
+      <material name="white_label"><color rgba="0.9 0.9 0.9 1.0"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.036" rpy="0 0 0"/>
+      <geometry><box size="0.11 0.11 0.072"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.7"/>
+      <inertia ixx="0.0009" ixy="0" ixz="0" iyy="0.0009" iyz="0" izz="0.0014"/>
+    </inertial>
+  </link>
+
+  <joint name="jetson_housing_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="jetson_housing_link"/>
+    <origin xyz="-0.032 0 0.093" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Pixhawk Cube Orange+ (orange) -->
+  <link name="pixhawk_cube_link">
+    <visual>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.038 0.038 0.008"/></geometry>
+      <material name="pixhawk_base_gray"><color rgba="0.15 0.15 0.15 1.0"/></material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.019" rpy="0 0 0"/>
+      <geometry><box size="0.038 0.038 0.022"/></geometry>
+      <material name="pixhawk_orange">
+        <color rgba="1.0 0.43 0.0 1.0"/>
+      </material>
+    </visual>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="2e-5" ixy="0" ixz="0" iyy="2e-5" iyz="0" izz="2e-5"/>
+    </inertial>
+  </link>
+
+  <!-- Pixhawk now sits BESIDE the Jetson, flush on the waffle plate -->
+  <joint name="pixhawk_cube_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="pixhawk_cube_link"/>
+    <origin xyz="-0.032 -0.074 0.093" rpy="0 0 0"/>
+  </joint>
+
+  <!-- IMU lives inside the Pixhawk Cube (matches real robot) -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="pixhawk_cube_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.015" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Velodyne VLP-16 — directly on top of the Jetson housing -->
+  <link name="velodyne">
+    <visual>
+      <origin xyz="0 0 0.0359" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.0515" length="0.0718"/></geometry>
+      <material name="vlp_body"><color rgba="0.15 0.15 0.15 1.0"/></material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.067" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.052" length="0.005"/></geometry>
+      <material name="vlp_ring"><color rgba="0.4 0.6 0.8 1.0"/></material>
+    </visual>
+    <inertial>
+      <mass value="0.83"/>
+      <inertia ixx="0.0003" ixy="0" ixz="0" iyy="0.0003" iyz="0" izz="0.0004"/>
+    </inertial>
+  </link>
+
+  <joint name="velodyne_joint" type="fixed">
+    <parent link="jetson_housing_link"/>
+    <child link="velodyne"/>
+    <origin xyz="0 0 0.072" rpy="0 0 0"/>
+  </joint>
+
+</robot>

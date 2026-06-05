@@ -1,0 +1,145 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Normal Cell Count: 0
+      Cell Size: 1
+      Color: 160; 160; 164
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Alpha: 1.0
+
+    - Class: rviz_default_plugins/PointCloud2
+      Name: VelodynePoints
+      Enabled: true
+      Topic:
+        Value: /velodyne_points
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Size (Pixels): 2
+      Size (m): 0.02
+      Style: Points
+      Color Transformer: FlatColor
+      Color: 0; 255; 0
+      Alpha: 1.0
+      Decay Time: 0
+      Use Fixed Frame: true
+
+    - Class: rviz_default_plugins/PointCloud2
+      Name: RKO-LIO Local Map
+      Enabled: true
+      Topic:
+        Value: /rko_lio/local_map
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Size (Pixels): 3
+      Size (m): 0.03
+      Style: Points
+      Color Transformer: AxisColor
+      Axis: Z
+      Alpha: 1.0
+      Decay Time: 0
+      Use Fixed Frame: true
+
+    - Class: rviz_default_plugins/Odometry
+      Name: RKO-LIO Odometry
+      Enabled: true
+      Topic:
+        Value: /rko_lio/odometry
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color: 255; 25; 0
+      Shape:
+        Value: Arrow
+        Shaft Length: 0.1
+        Shaft Radius: 0.01
+        Head Length: 0.03
+        Head Radius: 0.02
+      Position Tolerance: 0.1
+      Angle Tolerance: 0.1
+      Keep: 100
+      Covariance:
+        Value: false
+
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+      Show Names: true
+      Show Arrows: true
+      Show Axes: true
+      Marker Scale: 0.3
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        velodyne:
+          Value: true
+        base_footprint:
+          Value: true
+        odom:
+          Value: true
+        map:
+          Value: true
+      Update Interval: 0
+
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: odom
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/ThirdPersonFollower
+      Distance: 8.0
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.01
+      Pitch: 0.5
+      Target Frame: base_footprint
+      Yaw: 3.14
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 100
+  Y: 100

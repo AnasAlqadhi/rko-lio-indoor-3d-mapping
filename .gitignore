@@ -1,0 +1,46 @@
+# ── ROS 2 / colcon build artifacts ────────────────────────────────────────────
+build/
+install/
+log/
+.colcon/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.Python
+env/
+venv/
+.venv/
+
+# ── C/C++ build outputs ───────────────────────────────────────────────────────
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+
+# ── Recordings / maps / heavy data (kept on external drive, NEVER in git) ──────
+recordings/
+*.bag
+*.db3
+*.mcap
+*.pcd
+*.ply
+*.tar
+*.tar.gz
+*.zip
+
+# ── Large media originals (use Git LFS or external links instead) ─────────────
+media/video/*.mp4
+media/video/*.mov
+media/video/*.mkv
+
+# ── IDEs / OS cruft ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
