@@ -1,0 +1,93 @@
+/**:
+  ros__parameters:
+
+    # Topics — sim publishes Pixhawk IMU on /mavros/imu/data (matches real robot)
+    pointCloudTopic: "/velodyne_points_proc"
+    imuTopic: "/mavros/imu/data"
+    odomTopic: "odometry/imu"
+    gpsTopic: "odometry/gpsz"
+
+    # Frames
+    lidarFrame: "velodyne"
+    baselinkFrame: "base_link"
+    odometryFrame: "odom"
+    mapFrame: "map"
+
+    # GPS disabled
+    useImuHeadingInitialization: false
+    useGpsElevation: false
+    gpsCovThreshold: 2.0
+    poseCovThreshold: 25.0
+
+    # Export disabled by default
+    savePCD: false
+    savePCDDirectory: "/Downloads/LOAM/"
+
+    # Sensor: VLP-16
+    sensor: velodyne
+    N_SCAN: 16
+    Horizon_SCAN: 1800
+    downsampleRate: 1
+    lidarMinRange: 0.3
+    lidarMaxRange: 20.0
+
+    # IMU noise tuned for 50 Hz Pixhawk Cube Orange+.
+    # LIO-SAM's preintegration assumes high-rate IMU; at 50 Hz we must raise
+    # measurement noise so the optimizer trusts the lidar matches more than
+    # the integrated IMU motion. (Real Pixhawk EKF at 50 Hz is noisier than
+    # a raw 200 Hz IMU due to under-sampling of high-freq vibration.)
+    imuAccNoise: 0.02
+    imuGyrNoise: 0.005
+    imuAccBiasN: 0.001
+    imuGyrBiasN: 0.0001
+    imuGravity: 9.80511
+    imuRPYWeight: 0.01
+
+    # Extrinsics from IMU frame to LiDAR. IMU is at pixhawk_cube (0.06, 0, 0.272)
+    # and LiDAR is at velodyne (0, 0, 0.325). Translation IMU->LiDAR = LiDAR - IMU.
+    extrinsicTrans: [-0.06, 0.0, 0.053]
+    extrinsicRot:   [1.0, 0.0, 0.0,
+                     0.0, 1.0, 0.0,
+                     0.0, 0.0, 1.0]
+    extrinsicRPY:   [1.0, 0.0, 0.0,
+                     0.0, 1.0, 0.0,
+                     0.0, 0.0, 1.0]
+
+    # LOAM features
+    edgeThreshold: 1.0
+    surfThreshold: 0.1
+    edgeFeatureMinValidNum: 10
+    surfFeatureMinValidNum: 100
+
+    # Voxel filters (indoor tuning)
+    odometrySurfLeafSize: 0.2
+    mappingCornerLeafSize: 0.1
+    mappingSurfLeafSize: 0.2
+
+    # 2D robot motion constraint (TurtleBot3 is planar)
+    z_tollerance: 0.3
+    rotation_tollerance: 1000.0
+
+    # CPU
+    numberOfCores: 4
+    mappingProcessInterval: 0.15
+
+    # Keyframes
+    surroundingkeyframeAddingDistThreshold: 0.5
+    surroundingkeyframeAddingAngleThreshold: 0.2
+    surroundingKeyframeDensity: 1.0
+    surroundingKeyframeSearchRadius: 20.0
+
+    # Loop closure
+    loopClosureEnableFlag: true
+    loopClosureFrequency: 1.0
+    surroundingKeyframeSize: 50
+    historyKeyframeSearchRadius: 10.0
+    historyKeyframeSearchTimeDiff: 30.0
+    historyKeyframeSearchNum: 25
+    historyKeyframeFitnessScore: 0.3
+
+    # Global map viz
+    globalMapVisualizationSearchRadius: 50.0
+    globalMapVisualizationPoseDensity: 5.0
+    globalMapVisualizationLeafSize: 0.2

@@ -1,0 +1,14 @@
+
+APE w.r.t. translation part (m)
+(with SE(3) Umeyama alignment)
+
+
+                                 rmse      mean    median        std  \
+liosam_ape_small_house.zip  12.075472  5.958359  1.213057  10.503094   
+rkolio_ape_small_house.zip   0.076108  0.071404  0.067376   0.026342   
+
+                                 min        max          sse  
+liosam_ape_small_house.zip  0.980871  40.528221  26976.14885  
+rkolio_ape_small_house.zip  0.016103   0.129323     2.803553  
+
+Plots saved to comparison_ape_small_house.pdf

@@ -1,0 +1,17 @@
+RPE w.r.t. translation part (m)
+for delta = 1.0 (m) using consecutive pairs
+(with SE(3) Umeyama alignment)
+
+       max	0.085874
+      mean	0.018214
+    median	0.012134
+       min	0.002782
+      rmse	0.024991
+       sse	0.018112
+       std	0.017112
+
+[WARNING] liosam_rpe_small_house.pdf exists, overwrite?
+enter 'y' to overwrite or any other key to cancel
+Plots saved to liosam_rpe_small_house.pdf
+[WARNING] liosam_rpe_small_house.zip exists, overwrite?
+enter 'y' to overwrite or any other key to cancel

@@ -1,0 +1,16 @@
+APE w.r.t. translation part (m)
+(with SE(3) Umeyama alignment)
+
+       max	0.236928
+      mean	0.144042
+    median	0.138202
+       min	0.068652
+      rmse	0.148254
+       sse	29.891878
+       std	0.035089
+
+[WARNING] rkolio_ape_small_house.pdf exists, overwrite?
+enter 'y' to overwrite or any other key to cancel
+Plots saved to rkolio_ape_small_house.pdf
+[WARNING] rkolio_ape_small_house.zip exists, overwrite?
+enter 'y' to overwrite or any other key to cancel

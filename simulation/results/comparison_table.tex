@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Trajectory accuracy (RMSE, m) on three simulated environments. APE: absolute pose error; RPE: relative pose error over 1\,m. Best per row in bold.}
+\label{tab:sim_comparison}
+\begin{tabular}{llccc}
+\toprule
+Environment & Metric & LIO-SAM & RKO-LIO & FAST-LIO \\
+\midrule
+Small House & APE & 0.049 & 0.148 & \textbf{0.026} \\
+ & RPE & 0.025 & 0.042 & \textbf{0.018} \\
+\midrule
+Warehouse & APE & 0.040 & 0.163 & \textbf{0.034} \\
+ & RPE & 0.023 & 0.033 & \textbf{0.016} \\
+\midrule
+Bookstore & APE & 21.689 & 0.494 & \textbf{0.039} \\
+ & RPE & 22.962 & 0.148 & \textbf{0.022} \\
+\bottomrule
+\end{tabular}
+\end{table}

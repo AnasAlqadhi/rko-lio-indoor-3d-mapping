@@ -1,0 +1,16 @@
+APE w.r.t. translation part (m)
+(with SE(3) Umeyama alignment)
+
+       max	0.089764
+      mean	0.046505
+    median	0.044662
+       min	0.012617
+      rmse	0.048937
+       sse	1.604516
+       std	0.015236
+
+[WARNING] liosam_ape_small_house.pdf exists, overwrite?
+enter 'y' to overwrite or any other key to cancel
+Plots saved to liosam_ape_small_house.pdf
+[WARNING] liosam_ape_small_house.zip exists, overwrite?
+enter 'y' to overwrite or any other key to cancel

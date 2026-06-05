@@ -44,3 +44,6 @@ media/video/*.mkv
 *.swo
 .DS_Store
 Thumbs.db
+
+# ── Allow small evo result zips under simulation/results (kept in git) ─────────
+!simulation/results/**/*.zip
